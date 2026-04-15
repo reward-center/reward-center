@@ -5,199 +5,181 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Reward Center</title>
 
-<script type="text/javascript" id="ogjs" src="https://appchecker.space/cl/js/271x3k"></script>
-
 <style>
-body {
+body{
     margin:0;
-    font-family: Arial, sans-serif;
-    background: linear-gradient(135deg,#0f172a,#1e293b);
+    font-family:Arial;
+    background:#0b1220;
     color:#fff;
-    text-align:center;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
 }
 
-.container {
-    max-width:350px;
-    margin:40px auto;
+/* CARD */
+.container{
+    width:90%;
+    max-width:380px;
+    background:#111a2e;
     padding:20px;
-    background:#111827;
     border-radius:15px;
-    box-shadow:0 0 20px rgba(0,255,150,0.2);
+    text-align:center;
+    box-shadow:0 0 30px rgba(0,255,200,0.2);
+    animation:fadeIn 1s ease;
 }
 
-img {
+/* IMAGE */
+img{
     width:100%;
     border-radius:10px;
+    margin-bottom:15px;
 }
 
-h2 {
-    margin-top:10px;
-    font-weight:normal;
-}
-
-input {
-    width:90%;
-    padding:12px;
+/* TITLE */
+h2{
     margin:10px 0;
+}
+
+/* INPUT */
+input{
+    width:100%;
+    padding:12px;
     border:none;
     border-radius:8px;
+    margin-top:10px;
     font-size:16px;
 }
 
-button {
-    width:95%;
-    padding:12px;
+/* BUTTON */
+button{
+    width:100%;
+    padding:14px;
+    margin-top:15px;
     border:none;
-    border-radius:8px;
-    background:#22c55e;
-    color:#fff;
+    border-radius:10px;
+    background:#00c853;
+    color:white;
     font-size:16px;
     cursor:pointer;
+    transition:0.3s;
 }
 
-.hidden {
+/* BUTTON EFFECT */
+button:hover{
+    transform:scale(1.05);
+    background:#00e676;
+    box-shadow:0 0 15px #00ff99;
+}
+
+/* PROGRESS BAR */
+.progress{
+    height:8px;
+    background:#222;
+    border-radius:10px;
+    overflow:hidden;
+    margin-bottom:15px;
+}
+.bar{
+    height:100%;
+    width:0%;
+    background:linear-gradient(90deg,#00ffcc,#00ff99);
+    transition:0.5s;
+}
+
+/* LOADING TEXT */
+.loading{
+    margin-top:15px;
+    display:none;
+    font-size:14px;
+    color:#00ffcc;
+}
+
+/* FINAL BUTTON */
+.final{
     display:none;
 }
 
-/* STEP BAR */
-.steps {
-    display:flex;
-    justify-content:space-between;
-    margin:15px 0;
-    font-size:12px;
+/* ANIMATIONS */
+@keyframes fadeIn{
+    from{opacity:0;transform:translateY(20px);}
+    to{opacity:1;}
 }
 
-.step {
-    flex:1;
-    padding:5px;
-    border-bottom:3px solid #333;
-}
-
-.active {
-    border-color:#22c55e;
-}
-
-/* LOADING */
-.loading {
-    width:100%;
-    height:10px;
-    background:#333;
-    border-radius:10px;
-    margin-top:15px;
-}
-
-.bar {
-    height:10px;
-    width:0%;
-    background:#22c55e;
-    border-radius:10px;
-}
-
-.final-box {
-    margin-top:20px;
+/* TECH GLOW */
+.container::before{
+    content:'';
+    position:absolute;
+    width:400px;
+    height:400px;
+    background:radial-gradient(circle,#00ffcc33,transparent);
+    z-index:-1;
+    filter:blur(60px);
 }
 </style>
+
 </head>
 
 <body>
 
 <div class="container">
 
-<img src="https://www.image2url.com/r2/default/images/1776226871582-a28e549c-c1cf-4692-a072-84383c4c7016.jpg">
+    <div class="progress">
+        <div class="bar" id="bar"></div>
+    </div>
 
-<h2>Unlock your reward</h2>
+    <img src="https://www.image2url.com/r2/default/images/1776226871582-a28e549c-c1cf-4692-a072-84383c4c7016.jpg">
 
-<!-- STEP BAR -->
-<div class="steps">
-<div class="step active" id="s1">Step 1</div>
-<div class="step" id="s2">Step 2</div>
-<div class="step" id="s3">Step 3</div>
-</div>
+    <h2>Unlock your reward</h2>
 
-<!-- STEP 1 -->
-<div id="step1">
-<input type="text" id="username" placeholder="Enter your username">
-<button onclick="goStep2()">Continue</button>
-</div>
+    <input type="text" id="username" placeholder="Enter username">
 
-<!-- STEP 2 -->
-<div id="step2" class="hidden">
-<p>Select reward</p>
-<button onclick="startProcess()">💻 Gaming PC</button>
-<button onclick="startProcess()">🎧 Gaming Setup</button>
-<button onclick="startProcess()">🖥️ RGB Desktop</button>
-</div>
+    <button onclick="step1()">Continue</button>
 
-<!-- STEP 3 -->
-<div id="step3" class="hidden">
-<p id="status">Checking availability...</p>
+    <div class="loading" id="loading"></div>
 
-<div class="loading">
-<div class="bar" id="bar"></div>
-</div>
-
-<div class="final-box hidden" id="finalBox">
-<p>Final step: complete a quick task</p>
-<a href="https://appchecker.space/cl/i/271x3k">
-<button>Continue</button>
-</a>
-</div>
-
-</div>
+    <div class="final" id="finalBox">
+        <p>Verification required to complete delivery</p>
+        <button onclick="goCPA()">Complete Now</button>
+    </div>
 
 </div>
 
 <script>
 
-function goStep2(){
+// STEP 1
+function step1(){
     let user = document.getElementById("username").value;
-    if(user==""){
-        alert("Enter username first");
+    if(user == ""){
+        alert("Enter username first!");
         return;
     }
 
-    document.getElementById("step1").style.display="none";
-    document.getElementById("step2").style.display="block";
+    document.getElementById("bar").style.width = "33%";
+    let load = document.getElementById("loading");
 
-    document.getElementById("s1").classList.remove("active");
-    document.getElementById("s2").classList.add("active");
+    load.style.display = "block";
+    load.innerHTML = "Connecting to server...";
+
+    setTimeout(()=>{
+        load.innerHTML = "Checking availability...";
+        document.getElementById("bar").style.width = "66%";
+    },2000);
+
+    setTimeout(()=>{
+        load.innerHTML = "Preparing your reward...";
+        document.getElementById("bar").style.width = "100%";
+    },4000);
+
+    setTimeout(()=>{
+        load.innerHTML = "Final step required";
+        document.getElementById("finalBox").style.display = "block";
+    },6000);
 }
 
-function startProcess(){
-    document.getElementById("step2").style.display="none";
-    document.getElementById("step3").style.display="block";
-
-    document.getElementById("s2").classList.remove("active");
-    document.getElementById("s3").classList.add("active");
-
-    let bar = document.getElementById("bar");
-    let status = document.getElementById("status");
-
-    let width = 0;
-
-    let interval = setInterval(function(){
-        if(width >= 100){
-            clearInterval(interval);
-
-            status.innerHTML = "Reward ready. Final verification required.";
-
-            document.getElementById("finalBox").style.display="block";
-
-        } else {
-            width++;
-            bar.style.width = width + "%";
-
-            if(width == 30){
-                status.innerHTML = "Connecting to secure server...";
-            }
-            if(width == 60){
-                status.innerHTML = "Verifying request...";
-            }
-            if(width == 90){
-                status.innerHTML = "Preparing delivery...";
-            }
-        }
-    },40);
+// FINAL REDIRECT (TIDAK AUTO)
+function goCPA(){
+    window.location.href = "https://appchecker.space/cl/i/271x3k";
 }
 
 </script>
